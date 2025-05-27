@@ -54,8 +54,6 @@ uint8_t capture_input(inputBuffer *buffer) {
 }
 
 void check_input(inputBuffer *buffer) {
-  DIR *dir_stream = NULL;
-  struct dirent *entry = NULL;
 
   char *command = buffer->tc.argv[0];
 

@@ -32,7 +32,6 @@ void tokenize_path(tokenizedFormat *paths, const char *path_env) {
 void execute_from_path(char *program_dir, inputBuffer *buf) {
 
   char *absoulte_path = NULL;
-  uint8_t counter;
   char *commandName = NULL;
   commandName = buf->tc.argv[0];
 

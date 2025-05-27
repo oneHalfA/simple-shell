@@ -21,6 +21,7 @@ void handle_cd(inputBuffer *buffer) {
 }
 
 void handle_pwd(inputBuffer *buffer) {
+  (void)buffer;
   char cwd[PATH_MAX];
 
   if (getcwd(cwd, PATH_MAX) != NULL)
