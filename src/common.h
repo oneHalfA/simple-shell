@@ -8,6 +8,9 @@
 #include <string.h>
 #include <stdlib.h> // getenv is here
 
+#define OK 0
+#define FAILED 1
+
 typedef struct {
   char **argv;
   uint8_t argn;
