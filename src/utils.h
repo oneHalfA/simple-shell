@@ -12,6 +12,6 @@
   print_log(format, __VA_ARGS__)
 
 void print_log(const char *format, ...);
-void free_buffer(tokenizedFormat *t, char type);
+void free_buffer(tokenizedFormat *t);
 
 #endif

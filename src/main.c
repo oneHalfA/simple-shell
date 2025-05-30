@@ -19,7 +19,7 @@ int main(void) {
 
     printf("$ ");
 
-    free_buffer(&(buffer.tc), 'b');
+    free_buffer(&(buffer.tc));
   }
 
   free(buffer.input);
