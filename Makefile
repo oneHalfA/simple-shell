@@ -10,6 +10,7 @@ SRC = src/builtin.c \
 
 OBJ := $(patsubst src/%.c, $(BUILD_DIR)/%.o, $(SRC))
 
+# dutsh: don't use this shell
 TARGET := dutsh
 
 CFLAGS := -Wall -Wextra -c
@@ -22,12 +23,12 @@ $(BUILD_DIR):
 
 $(TARGET): $(OBJ)
 	@echo "Linking object files into $(TARGET)..."
-	$(CC) $(OBJ) -o $@
+	@$(CC) $(OBJ) -o $@
 	@echo "Build complete. Executable: ./$(TARGET)"
 
 $(BUILD_DIR)/%.o: src/%.c
 	@echo "Compiling $<..."
-	$(CC) $(CFLAGS) $< -o $@
+	@$(CC) $(CFLAGS) $< -o $@
 
 .PHONY: clean
 clean:
