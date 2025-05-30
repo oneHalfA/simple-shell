@@ -56,7 +56,7 @@ void execute_from_path(char *program_dir, inputBuffer *buf) {
   free(absoulte_path);
 }
 
-char *is_in_path(char *command, const char *func_caller) {
+char *is_in_path(char *command) {
 
   DIR *dir_stream = NULL;
   struct dirent *entry = NULL;
@@ -76,8 +76,6 @@ char *is_in_path(char *command, const char *func_caller) {
 
     while ((entry = readdir(dir_stream)) != NULL) {
       if (!strcmp(entry->d_name, command)) {
-        if (!strcmp(func_caller, "handle_type"))
-          printf("%s is %s/%s\n", command, dir, command);
         found = strdup(dir);
         goto here;
       }

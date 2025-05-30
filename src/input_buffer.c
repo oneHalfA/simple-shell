@@ -60,7 +60,7 @@ void check_input(inputBuffer *buffer) {
   bool rv = is_builtin(buffer);
   if (!rv) {
     char *program_dir = NULL;
-    program_dir = is_in_path(command, __func__);
+    program_dir = is_in_path(command);
 
     if (!program_dir)
       return;

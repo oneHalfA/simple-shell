@@ -45,7 +45,9 @@ void handle_exit(inputBuffer *buffer) {
   int exit_code = 0;
 
   if (buffer->tc.argn == 2) {
-    exit_code = atoi( buffer->tc.argv[1]); // TODO Not complete=> error checking over other inputs
+    exit_code = atoi(
+        buffer->tc
+            .argv[1]); // TODO Not complete=> error checking over other inputs
   }
   exit(exit_code);
 }
@@ -82,9 +84,11 @@ void handle_type(inputBuffer *buffer) {
     }
   }
 
-  found_program_path = is_in_path(command, __func__);
+  found_program_path = is_in_path(command);
   if (!found_program_path)
     printf("%s: not found\n", command);
-  else
+  else {
+    printf("%s is %s/%s\n", command, found_program_path, command);
     free(found_program_path);
+  }
 }

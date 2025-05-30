@@ -7,7 +7,7 @@
 #include <sys/wait.h>
 
 void tokenize_path(tokenizedFormat *paths, const char *path_env);
-char *is_in_path(char *command, const char *caller);
+char *is_in_path(char *command);
 void execute_from_path(char *program_dir, inputBuffer *command);
 
 #endif
