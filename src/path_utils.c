@@ -1,32 +1,30 @@
 #include "path_utils.h"
+#include "linked_list.h"
 
+list* init_path(void) {
+  list* path = NULL;
+  char *path_var = getenv("PATH");
 
-void tokenize_path(tokenizedFormat *paths, const char *path_env) {
-  char *path_env_copy = strdup(path_env);
-  char *token = strtok(path_env_copy, ":");
-  paths->argn = 0;
-
-  if (token == NULL) {
-    fprintf(stderr, "Error: No path in PATH variable.\n");
-    exit(EXIT_FAILURE);
+  if (!path_var) {
+    LOG("Could not initialize path variable: env_path = %p", path_var);
+    exit(FAILED);
   }
 
-  while (token) {
-    paths->argn++;
-    token = strtok(NULL, ":");
+  char env_path[strlen(path_var) + 1];
+  strcpy(env_path, path_var);
+
+
+  char *token = strtok(env_path, ":");
+  if (!token) {
+    LOG("PATH does not have value: token = %p", token);
+    exit(FAILED);
   }
 
-  strcpy(path_env_copy, path_env);
-
-  paths->argv = (char **)calloc(paths->argn, sizeof(char *));
-
-  token = strtok(path_env_copy, ":");
-  for (int i = 0; i < paths->argn; ++i) {
-    paths->argv[i] = (char *)calloc(1, strlen(token) + 1);
-    token = strtok(NULL, ":");
+  path = create_node(token, strlen(token));
+  while ((token = strtok(NULL, ":"))) {
+    add_list(path, create_node(token, strlen(token)));
   }
-
-  free(path_env_copy);
+  return path;
 }
 
 void execute_from_path(char *program_dir, inputBuffer *buf) {
@@ -38,7 +36,7 @@ void execute_from_path(char *program_dir, inputBuffer *buf) {
   uint8_t len = strlen(program_dir);
   len += strlen(commandName);
 
-  absoulte_path = (char *)calloc(1, len + 2); // +2  = 1 ('\0') + 1 ('\')
+  absoulte_path = (char *)calloc(1, len + 2); // +2 = 1 ('\0') + 1 ('\')
 
   strcpy(absoulte_path, program_dir);
   strcat(absoulte_path, "/");
@@ -62,28 +60,23 @@ char *is_in_path(char *command) {
   struct dirent *entry = NULL;
 
   char *found = NULL;
+  char *dir = NULL;
+  list* path_copy = path;
 
-  char *path_copy = strdup(path);
-  char *dir = strtok(path_copy, ":");
+  foreach (path_copy) {
 
-  while (dir != NULL) {
+    dir = path_copy->data;
     dir_stream = opendir(dir);
 
-    if (!dir_stream) {
-      dir = strtok(NULL, ":");
+    if (!dir_stream)
       continue;
-    }
 
-    while ((entry = readdir(dir_stream)) != NULL) {
+    while ((entry = readdir(dir_stream)) != NULL)
       if (!strcmp(entry->d_name, command)) {
         found = strdup(dir);
-        goto here;
+        closedir(dir_stream);
+        return found;
       }
-    }
-    dir = strtok(NULL, ":");
   }
-here:
-  free(path_copy);
-  closedir(dir_stream);
-  return found;
+  return NULL;
 }

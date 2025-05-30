@@ -28,6 +28,6 @@ typedef struct list {
   void *data;
 } list;
 
-extern const char *path;
+extern list *path;
 
 #endif

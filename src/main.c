@@ -1,13 +1,12 @@
 #include "path_utils.h"
 #include "input_buffer.h"
 
-const char* path = NULL;
+list *path = NULL;
 int main(void) {
 
   setbuf(stdout, NULL);
-  path = getenv("PATH");
-  tokenizedFormat paths;
-  tokenize_path(&paths, path);
+  path = init_path();
+
 
   inputBuffer buffer = create_new_input_buffer();
   printf("$ ");
@@ -23,8 +22,8 @@ int main(void) {
     free_buffer(&(buffer.tc), 'b');
   }
 
-  free_buffer(&paths, 'p');
   free(buffer.input);
+  free_list(path);
 
   return OK;
 }
