@@ -1,16 +1,17 @@
 CC = gcc
 BUILD_DIR := build
 
-SRC = src/builtin.c \
+SRC =  src/builtin.c \
        src/input_buffer.c \
        src/utils.c \
        src/path_utils.c \
        src/main.c \
-	   src/linked_list.c
+       src/linked_list.c \
+       src/parse_symbol.c
 
 OBJ := $(patsubst src/%.c, $(BUILD_DIR)/%.o, $(SRC))
 
-# dutsh: don't use this shell
+# dutsh= don't use this shell
 TARGET := dutsh
 
 CFLAGS := -Wall -Wextra -c
@@ -35,4 +36,5 @@ clean:
 	@echo "Cleaning up buid files..."
 	@rm -f $(OBJ)
 	@rm -rf $(BUILD_DIR)
+	@rm $(TARGET)
 	@echo "Clean up complete."
