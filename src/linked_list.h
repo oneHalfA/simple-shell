@@ -7,7 +7,7 @@
 
 void show_list(list *head);
 list *create_node(char *data, size_t length);
-void add_list(list *head, list *new_node);
+list* add_list(list *head, list *new_node);
 void free_list(list *head);
 
 

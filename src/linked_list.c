@@ -11,11 +11,16 @@ list *create_node(char *data, size_t length) {
   return tmp_node;
 }
 
-void add_list(list *head, list *new_node) {
+list *add_list(list *head, list *new_node) {
+  if (!head)
+    return new_node;
+
   list *tmp = head;
   for (; tmp->next; tmp = tmp->next)
     ;
   tmp->next = new_node;
+
+  return head;
 }
 
 void show_list(list *head) {
