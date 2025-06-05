@@ -10,6 +10,7 @@
 
 #define OK 0
 #define FAILED 1
+#define MAX_BUFFER_SIZE 128
 
 typedef struct {
   char **argv;

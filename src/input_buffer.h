@@ -5,7 +5,6 @@
 #include "builtin.h"
 #include "linked_list.h"
 
-#define MAX_BUFFER_SIZE 128
 
 inputBuffer create_new_input_buffer(void);
 uint8_t capture_input(inputBuffer *buffer);
