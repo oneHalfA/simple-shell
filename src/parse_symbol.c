@@ -28,53 +28,58 @@ int parse_quote(inputBuffer *buffer) {
   
   for (int i = 0; input[i]; i++) {
 
-    // ================================================== set the str if saw SQ
-    if (input[i] == SQ) {
-      if (saw_d == false) {
-        saw_s = !saw_s;
-        if (input[i + 1] != SQ)
-          str.finished = !saw_s;
-      }
-    } else if (input[i] == DQ) {
-      if (!saw_s) {
-        saw_d = !saw_d;
-        if (input[i + 1] != DQ)
-          str.finished = !saw_d;
-      }
-    }
-    // ================================================== fill str
-    if ((saw_s && input[i] != SQ) || (saw_d && input[i] != DQ))
-      str.str_between[str.inx++] = input[i];
-    else if (str.finished) {
-      str.str_between[str.inx] = 0;
-      token[index] = 0;
-      strcat(token, str.str_between);
-      index += str.inx;
-      reset(&str);
-    }
-    // ================================================== concatenate str with token and add it to the list
-    if (!saw_d && !saw_s && str.finished == false) {
-      if (input[i] == '\t' || input[i] == ' ') {
-
-        skip_delim(input, &i);
-        token[index] = 0;
-        head = add_list(head, create_node(token, strlen(token)));
-        buffer->tc.argn++;
-        index = 0;
-        // print_final(token, &index);
-      } else {
-
-        if (input[i] != SQ && input[i] != DQ)
-          token[index++] = input[i];
-        if (!input[i + 1]) {
-          token[index] = 0;
-          head = add_list(head, create_node(token, strlen(token)));
-          buffer->tc.argn++;
-          index = 0;
+        // ================================================== set the str if saw SQ
+        if (input[i] == SQ && saw_d == false) {
+            saw_s = !saw_s;
+            if (input[i + 1] != SQ)
+                str.finished = !saw_s;
+        } else if (input[i] == DQ && saw_s == false) {
+            saw_d = !saw_d;
+            if (input[i + 1] != DQ)
+                str.finished = !saw_d;
         }
-      }
+        // ================================================== fill str or concatenate it with token
+        if ((saw_s && input[i] != SQ)) {
+            str.str_between[str.inx++] = input[i];
+        } else if (saw_d && input[i] != DQ) {
+            if (IS_VALID_BACKSLASH(input, i) &&
+                (input[i + 1] == BACK_SLASH || input[i + 1] == '"' || input[i + 1] == '$' ||
+                 input[i + 1] == '`')) { // Parse BACK_SLASH within double quotes
+                str.str_between[str.inx++] = input[++i];
+            } else
+                str.str_between[str.inx++] = input[i];
+        } else if (str.finished) {
+            str.str_between[str.inx] = 0;
+            token[index] = 0;
+            strcat(token, str.str_between);
+            index += str.inx;
+            reset(&str);
+        }
+        // ================================================== add token to the list
+        if (!saw_d && !saw_s && str.finished == false) {
+            if (input[i] == '\t' || input[i] == ' ') {
+
+                skip_delim(input, &i);
+                token[index] = 0;
+                head = add_list(head, create_node(token, strlen(token)));
+                buffer->tc.argn++;
+                index = 0;
+            } else {
+                if (input[i] != SQ && input[i] != DQ) {
+                    if (IS_VALID_BACKSLASH(input, i)) // If SAW UNQUOTED back_slash
+                        token[index++] = input[++i];
+                    else
+                        token[index++] = input[i];
+                }
+                if (!input[i + 1]) {
+                    token[index] = 0;
+                    head = add_list(head, create_node(token, strlen(token)));
+                    buffer->tc.argn++;
+                    index = 0;
+                }
+            }
+        }
     }
-  }
 
   if (saw_d || saw_s) {
     return FAILED;

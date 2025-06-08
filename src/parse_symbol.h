@@ -5,6 +5,10 @@
 
 #define SQ '\''
 #define DQ '"'
+#define BACK_SLASH '\\'
+
+#define IS_VALID_BACKSLASH(str, index) \
+        (str[index] == BACK_SLASH && str[index + 1] != '\0')
 
 struct str_quote_s{
   char str_between[MAX_BUFFER_SIZE];
