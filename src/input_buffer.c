@@ -7,9 +7,8 @@ void remove_newline(char *input) {
 }
 
 inputBuffer create_new_input_buffer(void) {
-  inputBuffer tmp;
+  inputBuffer tmp = {0};
   tmp.input = (char *)calloc(MAX_BUFFER_SIZE, sizeof(char));
-  tmp.input_len = 0;
 
   return tmp;
 }
