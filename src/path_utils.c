@@ -77,6 +77,7 @@ char *is_in_path(char *command) {
         closedir(dir_stream);
         return found;
       }
+    closedir(dir_stream);
   }
   return NULL;
 }
