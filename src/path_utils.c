@@ -1,5 +1,4 @@
 #include "path_utils.h"
-#include "linked_list.h"
 
 list* init_path(void) {
   list* path = NULL;

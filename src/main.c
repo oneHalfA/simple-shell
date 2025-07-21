@@ -1,4 +1,3 @@
-#include "path_utils.h"
 #include "input_buffer.h"
 
 list *path = NULL;
