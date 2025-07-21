@@ -103,3 +103,26 @@ int parse_quote(inputBuffer *buffer) {
 
   return OK;
 }
+
+
+void check_redirection(inputBuffer *buffer){
+    char** argv = buffer->tc.argv;
+    uint8_t argn  = buffer->tc.argn;
+
+    if (argn >= 3){
+        if (strchr(argv[argn - 2],'>')){
+            if (!strcmp(argv[argn - 2], ">>")) {
+                // APPEND REDIRECTION
+            }
+            else if(argv[argn - 2][1] == '\0' || argv[argn - 2][0] == '1'){
+                // OUTPUT REDIRECTION
+                buffer->redirection_flag = r_out;
+            }
+            else if(argv[argn - 2][0] == '2'){
+                // ERR REDIRECTION
+                buffer->redirection_flag = r_err;
+            }
+        }
+        argv[argn - 2] = NULL;
+    }
+}

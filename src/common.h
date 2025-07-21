@@ -22,6 +22,7 @@ typedef struct {
   uint8_t input_len;
   bool validation;
   tokenizedFormat tc;
+  uint8_t redirection_flag;
 } inputBuffer;
 
 typedef struct list {

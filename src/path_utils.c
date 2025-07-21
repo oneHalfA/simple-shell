@@ -1,4 +1,5 @@
 #include "path_utils.h"
+#include <unistd.h>
 
 list* init_path(void) {
   list* path = NULL;
@@ -43,6 +44,7 @@ void execute_from_path(char *program_dir, inputBuffer *buf) {
 
   pid_t pid = fork();
   if (pid == 0) {
+    do_redirections(buf);
     execv(absoulte_path, buf->tc.argv);
     printf("%s %s %s \n", buf->tc.argv[0], buf->tc.argv[1], buf->tc.argv[2]);
 
@@ -79,4 +81,32 @@ char *is_in_path(char *command) {
     closedir(dir_stream);
   }
   return NULL;
+}
+
+void do_redirections(inputBuffer* buf) {
+  char* path = buf->tc.argv[buf->tc.argn - 1];
+  int fd;
+  int rv_dup;
+
+  switch (buf->redirection_flag) {
+    case r_out:
+      fd = open_file(path, OPEN_OVERWRITE);
+      assert((fd == -1), close(fd), "Could not open this file.");
+
+      rv_dup = dup2(fd, STDOUT_FILENO);
+      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
+
+      close(fd);
+      break;
+
+    case r_err:
+      fd = open_file(path, OPEN_OVERWRITE);
+      assert((fd == -1), close(fd), "Could not open this file.");
+
+      rv_dup = dup2(fd, STDERR_FILENO);
+      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
+
+      close(fd);
+      break;
+  }
 }

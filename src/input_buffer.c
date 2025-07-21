@@ -20,6 +20,7 @@ uint8_t capture_input(inputBuffer *buffer) {
   buffer->input_len = strlen(buffer->input);
   buffer->validation = false;
   buffer->tc.argn = 0;
+  buffer->redirection_flag = 0;
 
   int rv = parse_quote(buffer);
   if (rv) {
@@ -33,6 +34,7 @@ void check_input(inputBuffer *buffer) {
 
   char *command = buffer->tc.argv[0];
 
+  check_redirection(buffer);
   bool rv = is_builtin(buffer);
   if (!rv) {
     char *program_dir = NULL;
