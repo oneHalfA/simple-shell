@@ -35,7 +35,7 @@ void handle_echo(inputBuffer *buffer) {
   if (buffer->tc.argn <= 1)
     ;
   else {
-    for (int i = 1; i < buffer->tc.argn; i++)
+    for (int i = 1; i < buffer->tc.argn && buffer->tc.argv[i]; i++)
       printf("%s ", buffer->tc.argv[i]);
   }
   printf("\n");
@@ -61,7 +61,18 @@ bool is_builtin(inputBuffer *buffer) {
     if (!strcmp(command, builtin_funcs_names[i])) {
       buffer->validation = true;
       builtin = true;
-      builtin_funcs[i](buffer);
+
+      if (builtin_funcs[i] == handle_cd)
+          builtin_funcs[i](buffer);
+      else {
+        pid_t pid = fork();
+        if (pid == 0) {
+          do_redirections(buffer);
+          builtin_funcs[i](buffer);
+          exit(EXIT_SUCCESS);
+        } else if (pid > 0)
+          wait(NULL);
+      }
       break;
     }
   }
