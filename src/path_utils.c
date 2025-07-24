@@ -108,5 +108,23 @@ void do_redirections(inputBuffer* buf) {
 
       close(fd);
       break;
+    case r_append_out:
+      fd = open_file(path, OPEN_APPEND);
+      assert((fd == -1), close(fd), "Could not open this file.");
+
+      rv_dup = dup2(fd, STDOUT_FILENO);
+      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
+
+      close(fd);
+      break;
+    case r_append_err:
+      fd = open_file(path, OPEN_APPEND);
+      assert((fd == -1), close(fd), "Could not open this file.");
+
+      rv_dup = dup2(fd, STDERR_FILENO);
+      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
+
+      close(fd);
+      break;
   }
 }

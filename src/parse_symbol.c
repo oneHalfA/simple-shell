@@ -110,9 +110,16 @@ void check_redirection(inputBuffer *buffer){
     uint8_t argn  = buffer->tc.argn;
 
     if (argn >= 3){
-        if (strchr(argv[argn - 2],'>')){
-            if (!strcmp(argv[argn - 2], ">>")) {
+        if (strchr(argv[argn - 2],'>')) {
+
+            if (strstr(argv[argn - 2], ">>") ){
                 // APPEND REDIRECTION
+                if(argv[argn - 2][0] == '1' || argv[argn - 2][2] == '\0')
+                    buffer->redirection_flag = r_append_out;
+
+                else if(argv[argn - 2][0] == '2')
+                    buffer->redirection_flag = r_append_err;
+
             }
             else if(argv[argn - 2][1] == '\0' || argv[argn - 2][0] == '1'){
                 // OUTPUT REDIRECTION
@@ -122,6 +129,7 @@ void check_redirection(inputBuffer *buffer){
                 // ERR REDIRECTION
                 buffer->redirection_flag = r_err;
             }
+
         }
         argv[argn - 2] = NULL;
     }
