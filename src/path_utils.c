@@ -84,47 +84,38 @@ char *is_in_path(char *command) {
 }
 
 void do_redirections(inputBuffer* buf) {
+  if (buf->redirection_flag == 0)
+    return;
   char* path = buf->tc.argv[buf->tc.argn - 1];
   int fd;
   int rv_dup;
 
-  switch (buf->redirection_flag) {
-    case r_out:
+  uint8_t mode = buf->redirection_flag >> 2;
+  uint8_t instruction = buf->redirection_flag & 0x03;
+
+  switch (mode) {
+    case over_wrtie:
       fd = open_file(path, OPEN_OVERWRITE);
       assert((fd == -1), close(fd), "Could not open this file.");
 
-      rv_dup = dup2(fd, STDOUT_FILENO);
-      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
+      if (instruction == r_out)
+        rv_dup = dup2(fd, STDOUT_FILENO);
+      else if (instruction == r_err)
+        rv_dup = dup2(fd, STDERR_FILENO);
 
-      close(fd);
+      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
       break;
 
-    case r_err:
-      fd = open_file(path, OPEN_OVERWRITE);
-      assert((fd == -1), close(fd), "Could not open this file.");
-
-      rv_dup = dup2(fd, STDERR_FILENO);
-      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
-
-      close(fd);
-      break;
-    case r_append_out:
+    case append:
       fd = open_file(path, OPEN_APPEND);
       assert((fd == -1), close(fd), "Could not open this file.");
 
-      rv_dup = dup2(fd, STDOUT_FILENO);
+      if (instruction == r_out)
+        rv_dup = dup2(fd, STDOUT_FILENO);
+      else if (instruction == r_err)
+        rv_dup = dup2(fd, STDERR_FILENO);
+
       assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
-
-      close(fd);
-      break;
-    case r_append_err:
-      fd = open_file(path, OPEN_APPEND);
-      assert((fd == -1), close(fd), "Could not open this file.");
-
-      rv_dup = dup2(fd, STDERR_FILENO);
-      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
-
-      close(fd);
       break;
   }
 }

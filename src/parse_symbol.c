@@ -114,23 +114,33 @@ void check_redirection(inputBuffer *buffer){
 
             if (strstr(argv[argn - 2], ">>") ){
                 // APPEND REDIRECTION
+                buffer->redirection_flag |= append;
+                buffer->redirection_flag <<= 2;
                 if(argv[argn - 2][0] == '1' || argv[argn - 2][2] == '\0')
-                    buffer->redirection_flag = r_append_out;
-
+                    // OUTPUT
+                    buffer->redirection_flag |= r_out;
                 else if(argv[argn - 2][0] == '2')
-                    buffer->redirection_flag = r_append_err;
-
+                    // ERROR
+                    buffer->redirection_flag |= r_err;
+                else
+                    buffer->redirection_flag = 0;
             }
-            else if(argv[argn - 2][1] == '\0' || argv[argn - 2][0] == '1'){
-                // OUTPUT REDIRECTION
-                buffer->redirection_flag = r_out;
-            }
-            else if(argv[argn - 2][0] == '2'){
-                // ERR REDIRECTION
-                buffer->redirection_flag = r_err;
+            else {
+                // OVERWRITE REDIRECTION
+                buffer->redirection_flag |= over_wrtie;
+                buffer->redirection_flag <<= 2;
+                if(argv[argn - 2][1] == '\0' || argv[argn - 2][0] == '1')
+                    // OUTPUT
+                    buffer->redirection_flag |= r_out;
+                else if(argv[argn - 2][0] == '2')
+                    // ERROR
+                    buffer->redirection_flag |= r_err;
+                else
+                    buffer->redirection_flag = 0;
             }
 
         }
-        argv[argn - 2] = NULL;
+        if (buffer->redirection_flag != 0)
+            argv[argn - 2] = NULL;
     }
 }
