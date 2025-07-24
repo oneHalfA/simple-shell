@@ -11,9 +11,9 @@ enum r_instruction {
   r_out = 1,
   r_err,
   r_out_err, // NOT IMPLEMENTED
-  r_appen_out,
-  r_appen_err,// NOT IMPLEMENTED
-  r_appen_out_err,// NOT IMPLEMENTED
+  r_append_out,
+  r_append_err,// NOT IMPLEMENTED
+  r_append_out_err,// NOT IMPLEMENTED
 };
 
 #define IS_VALID_BACKSLASH(str, index) \
