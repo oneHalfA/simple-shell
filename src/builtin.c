@@ -62,7 +62,7 @@ bool is_builtin(inputBuffer *buffer) {
       buffer->validation = true;
       builtin = true;
 
-      if (builtin_funcs[i] == handle_cd)
+      if (builtin_funcs[i] == handle_cd || builtin_funcs[i] == handle_exit)
           builtin_funcs[i](buffer);
       else {
         pid_t pid = fork();
