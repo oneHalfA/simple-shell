@@ -1,4 +1,5 @@
 #include "path_utils.h"
+#include <fcntl.h>
 #include <unistd.h>
 
 list* init_path(void) {
@@ -114,6 +115,14 @@ void do_redirections(inputBuffer* buf) {
         rv_dup = dup2(fd, STDOUT_FILENO);
       else if (instruction == r_err)
         rv_dup = dup2(fd, STDERR_FILENO);
+
+      assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
+      break;
+    case input:
+      fd = open_file(path, O_RDONLY);
+      assert((fd == -1), close(fd), "Could not open this file.");
+
+      rv_dup = dup2(fd, STDIN_FILENO);
 
       assert((rv_dup == -1), close(fd), "Could not duplicate file descriptors.");
       break;

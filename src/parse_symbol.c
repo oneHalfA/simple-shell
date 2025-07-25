@@ -140,6 +140,10 @@ void check_redirection(inputBuffer *buffer){
             }
 
         }
+        if (strchr(buffer->input, '<')){
+            buffer->redirection_flag |= input;
+            buffer->redirection_flag <<= 2;
+        }
         if (buffer->redirection_flag != 0)
             argv[argn - 2] = NULL;
     }

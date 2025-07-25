@@ -9,7 +9,8 @@
 
 enum redirection_mode {
   over_wrtie = 1,
-  append,
+  append = 2,
+  input = 4
 };
 
 enum r_instruction {
