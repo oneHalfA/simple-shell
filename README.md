@@ -22,6 +22,6 @@ This is a basic shell written in C. It provides a minimal command-line interface
 ### 🧪 Build and Run
 
 ```bash
-git clone https://github.com/yourusername/simple-c-shell.git
+git clone https://github.com/onehalfa/simple-c-shell.git
 cd simple-c-shell
 make          # or use: gcc -o mysh shell.c
